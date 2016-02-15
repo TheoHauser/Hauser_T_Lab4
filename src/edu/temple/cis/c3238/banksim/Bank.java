@@ -12,6 +12,7 @@ public class Bank {
     private final int initialBalance;
     private final int numAccounts;
     private boolean open;
+    public boolean flag;
 
     public Bank(int numAccounts, int initialBalance) {
         open = true;
@@ -22,18 +23,27 @@ public class Bank {
             accounts[i] = new Account(this, i, initialBalance);
         }
         ntransacts = 0;
+        flag = false;
     }
 
     public void transfer(int from, int to, int amount) {
+        while(flag);
+        ntransacts++;
+        //System.out.println(""+ntransacts);
         accounts[from].waitForAvailableFunds(amount);
         if (!open) return;
         if (accounts[from].withdraw(amount)) {
             accounts[to].deposit(amount);
         }
+        ntransacts--;
+        //System.out.println("Transfer done"+ ntransacts);
         if (shouldTest()) test();
     }
 
     public void test() {
+        flag = true;
+        System.out.println(""+ ntransacts);
+        while(ntransacts>0);
         int sum = 0;
         for (Account account : accounts) {
             System.out.printf("%s %s%n", 
@@ -50,6 +60,7 @@ public class Bank {
             System.out.println(Thread.currentThread().toString() + 
                     " The bank is in balance");
         }
+        flag = false;
     }
 
     public int size() {
@@ -70,7 +81,7 @@ public class Bank {
     }
     
     public synchronized boolean shouldTest() {
-        return ++ntransacts % NTEST == 0;
+        return (ntransacts+1) % NTEST == 0;
     }
 
 }

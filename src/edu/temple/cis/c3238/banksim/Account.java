@@ -25,6 +25,7 @@ public class Account {
             try {
                 wait();
             } catch (InterruptedException ex) { /* ignore */ }
+            return;
         }
     }
 
